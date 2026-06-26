@@ -4,6 +4,7 @@ import com.development.caffeine_caching_handson.repository.DataDao;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +20,7 @@ public class MovieController {
 	private final Cache<String, String> manualMovieCache;
 
 	// used for automated populating the cache
-	private final LoadingCache<String, String> automatedMovieCacheWithSizeBasedEviction;
+	private final LoadingCache<String, String> automatedMovieCache;
 
 	@GetMapping("/movie/{director}")
 	public String getMovieByDirectorManualCache(@PathVariable String director) {
@@ -36,6 +37,16 @@ public class MovieController {
 		// automated populating the cache, we just pass the key value, and
 		// if misses then the cache automatically handles the miss and populates
 		// the cache itself.
-		return automatedMovieCacheWithSizeBasedEviction.get(director);
+		return automatedMovieCache.get(director);
+	}
+
+	// when using this just make sure that you have not provided
+	// any eviction based removal of cache entry like size based or
+	// time based.
+	@GetMapping("/invalidate/{key}")
+	public String invalidateCache(@PathVariable String key) {
+//		automatedMovieCache.asMap(). // Cache instance can be used as a ConcurrentHashMap
+		automatedMovieCache.invalidate(key);
+		return "Key = " + key + " successfully removed";
 	}
 }
