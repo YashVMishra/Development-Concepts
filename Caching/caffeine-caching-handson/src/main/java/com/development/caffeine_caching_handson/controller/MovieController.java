@@ -19,7 +19,7 @@ public class MovieController {
 	private final Cache<String, String> manualMovieCache;
 
 	// used for automated populating the cache
-	private final LoadingCache<String, String> automatedMovieCache;
+	private final LoadingCache<String, String> automatedMovieCacheWithSizeBasedEviction;
 
 	@GetMapping("/movie/{director}")
 	public String getMovieByDirectorManualCache(@PathVariable String director) {
@@ -36,6 +36,6 @@ public class MovieController {
 		// automated populating the cache, we just pass the key value, and
 		// if misses then the cache automatically handles the miss and populates
 		// the cache itself.
-		return automatedMovieCache.get(director);
+		return automatedMovieCacheWithSizeBasedEviction.get(director);
 	}
 }
