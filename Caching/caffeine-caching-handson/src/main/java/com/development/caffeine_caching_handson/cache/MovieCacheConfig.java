@@ -31,13 +31,13 @@ public class MovieCacheConfig {
 	public LoadingCache<String, String> automatedMovieCache() {
 		return Caffeine.newBuilder()
 				.maximumSize(3) // uses LRU Policy to Evict the items from Cache
-				.removalListener(new RemovalListener<String, String>() {
+				.removalListener(new RemovalListener<String, String>() { // asynchronous in nature
 					@Override
 					public void onRemoval(@Nullable String key, @Nullable String value, RemovalCause cause) {
 						System.out.println("Key = " + key + ", value = " + value + " was removed. Reason = " + cause.toString());
 					}
 				})
-				.evictionListener(new RemovalListener<String, String>() {
+				.evictionListener(new RemovalListener<String, String>() { // synchronous in nature
 					@Override
 					public void onRemoval(@Nullable String key, @Nullable String value, RemovalCause cause) {
 						System.out.println("Key = " + key + ", value = " + value + " was evicted. Reason = " + cause.toString());
